@@ -27,7 +27,7 @@ contract CrossChainMessagingTest is Test {
     function testSendMessage() public {
         uint16 targetChain = 14; // Celo Testnet Wormhole chain ID
         address targetAddress = address(receiverContract); // Use the receiver contract's address
-        string memory message = "Hello from Avalanche to Celo!";
+        string memory message = "Hello from Ethereum to Celo!";
 
         // Mock the cross-chain cost estimation
         uint256 estimatedCost = 1 ether; // Replace with a mock value
@@ -35,17 +35,27 @@ contract CrossChainMessagingTest is Test {
 
         // Simulate the sendMessage call
         vm.expectRevert(); // Expect a revert due to unhandled cross-chain behavior in testing
-        senderContract.sendMessage{value: estimatedCost}(targetChain, targetAddress, message);
+        senderContract.sendMessage{value: estimatedCost}(
+            targetChain,
+            targetAddress,
+            message
+        );
     }
 
     function testReceiveMessage() public {
-        string memory message = "Hello from Avalanche to Celo!";
+        string memory message = "Hello from Ethereum to Celo!";
         bytes memory payload = abi.encode(message);
 
         // Simulate the Wormhole relayer by setting the msg.sender in the context of this call
         vm.prank(wormholeRelayer); // Set msg.sender to the mock Wormhole relayer (this contract)
 
         // Receive the message
-        receiverContract.receiveWormholeMessages(payload, new bytes[](0), bytes32(0), 14, bytes32(0));
+        receiverContract.receiveWormholeMessages(
+            payload,
+            new bytes[](0),
+            bytes32(0),
+            14,
+            bytes32(0)
+        );
     }
 }

@@ -12,17 +12,17 @@ async function main() {
 		fs.readFileSync(path.resolve(__dirname, '../deploy-config/deployedContracts.json'))
 	);
 
-	console.log('Sender Contract Address: ', deployedContracts.avalanche.MessageSender);
+	console.log('Sender Contract Address: ', deployedContracts.ethereum.MessageSender);
 	console.log('Receiver Contract Address: ', deployedContracts.celo.MessageReceiver);
 	console.log('...');
 
 	// Get the Avalanche Fuji configuration
-	const avalancheChain = chains.chains.find((chain) =>
-		chain.description.includes('Avalanche testnet')
+	const ethereumChain = chains.chains.find((chain) =>
+		chain.description.includes('Ethereum Sepolia')
 	);
 
 	// Set up the provider and wallet
-	const provider = new ethers.JsonRpcProvider(avalancheChain.rpc);
+	const provider = new ethers.JsonRpcProvider(ethereumChain.rpc);
 	const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 	// Load the ABI of the MessageSender contract
@@ -34,7 +34,7 @@ async function main() {
 
 	// Create a contract instance for MessageSender
 	const MessageSender = new ethers.Contract(
-		deployedContracts.avalanche.MessageSender, // Automatically use the deployed address
+		deployedContracts.ethereum.MessageSender, // Automatically use the deployed address
 		abi,
 		wallet
 	);
@@ -44,7 +44,7 @@ async function main() {
 	const targetAddress = deployedContracts.celo.MessageReceiver; // Automatically use the deployed address
 
 	// The message you want to send
-	const message = 'Hello from Avalanche to Celo!';
+	const message = 'Hello from Ethereum to Celo!';
 
 	// Dynamically quote the cross-chain cost
 	const txCost = await MessageSender.quoteCrossChainCost(targetChain);

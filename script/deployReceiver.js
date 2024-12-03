@@ -41,20 +41,20 @@ async function main() {
 	const deployedContracts = JSON.parse(fs.readFileSync(deployedContractsPath, 'utf8'));
 
 	// Retrieve the address of the MessageSender from the deployedContracts.json file
-	const avalancheSenderAddress = deployedContracts.avalanche.MessageSender;
+	const ethereumSenderAddress = deployedContracts.ethereum.MessageSender;
 
-	// Define the source chain ID for Avalanche Fuji
-	const sourceChainId = 6;
+	// Define the source chain ID for Ethereum Sepolia
+	const sourceChainId = 10002;
 
 	// Call setRegisteredSender on the MessageReceiver contract
 	const tx = await receiverContract.setRegisteredSender(
 		sourceChainId,
-		ethers.zeroPadValue(avalancheSenderAddress, 32)
+		ethers.zeroPadValue(ethereumSenderAddress, 32)
 	);
 	await tx.wait(); // Wait for the transaction to be confirmed
 
 	console.log(
-		`Registered MessageSender (${avalancheSenderAddress}) for Avalanche chain (${sourceChainId})`
+		`Registered MessageSender (${ethereumSenderAddress}) for Ethereum chain (${sourceChainId})`
 	);
 
 	deployedContracts.celo = {

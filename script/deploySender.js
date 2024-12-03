@@ -39,7 +39,7 @@ async function main() {
   const deployedContractsPath = path.resolve(__dirname, "../deploy-config/deployedContracts.json");
   const deployedContracts = JSON.parse(fs.readFileSync(deployedContractsPath, "utf8"));
 
-  deployedContracts.avalanche = {
+  deployedContracts.ethereum = {
     MessageSender: senderContract.target,
     deployedAt: new Date().toISOString()
   };
