@@ -29,18 +29,21 @@ async function main() {
   // Create a ContractFactory for MessageSender
   const MessageSender = new ethers.ContractFactory(abi, bytecode, wallet);
 
-  // Deploy the contract using the Wormhole Relayer address for Avalanche Fuji
-  const senderContract = await MessageSender.deploy(ethereumChain.wormholeRelayer);
-  await senderContract.waitForDeployment();
-
-  console.log("MessageSender deployed to:", senderContract.target);
-
   // Update the deployedContracts.json file
   const deployedContractsPath = path.resolve(__dirname, "../deploy-config/deployedContracts.json");
   const deployedContracts = JSON.parse(fs.readFileSync(deployedContractsPath, "utf8"));
 
+  const keyStoreAddress = deployedContracts.ethereum.KeyStore;
+
+  // Deploy the contract using the Wormhole Relayer address for Avalanche Fuji
+  const senderContract = await MessageSender.deploy(ethereumChain.wormholeRelayer, keyStoreAddress);
+  await senderContract.waitForDeployment();
+
+  console.log("MessageSender deployed to:", senderContract.target);
+
   deployedContracts.ethereum = {
     MessageSender: senderContract.target,
+    KeyStore: deployedContracts.ethereum.KeyStore,
     deployedAt: new Date().toISOString()
   };
 

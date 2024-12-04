@@ -1,10 +1,12 @@
 {
   "ethereum": {
-    "MessageSender": "0x0ea41d1C0b41a83B4f44f2b0EBE1b1c4a439e4c3",
-    "deployedAt": "2024-12-03T08:15:28.748Z"
+    "MessageSender": "0x74BFF894E7603bBFA7211b108Bdc3b61F43675FB",
+    "KeyStore": "0x0c43B3b1A262d55E9f3488318e09bc914B917a36",
+    "deployedAt": "2024-12-04T07:59:21.583Z"
   },
   "celo": {
-    "MessageReceiver": "0xcEC7AC061747517C9479998c17592D341fC69DaC",
-    "deployedAt": "2024-12-03T08:16:10.641Z"
+    "MessageReceiver": "0x1F418e304Be891d7B3e234AF969843017366158e",
+    "KeyStore": "0xDb488D8A393c717F542aaBFa863F1291a7d6EbF4",
+    "deployedAt": "2024-12-04T08:00:25.836Z"
   }
 }

@@ -12,8 +12,7 @@ async function main() {
 		fs.readFileSync(path.resolve(__dirname, '../deploy-config/deployedContracts.json'))
 	);
 
-	console.log('Sender Contract Address: ', deployedContracts.ethereum.MessageSender);
-	console.log('Receiver Contract Address: ', deployedContracts.celo.MessageReceiver);
+	console.log('KeyStore Contract Address: ', deployedContracts.ethereum.KeyStore);
 	console.log('...');
 
 	// Get the Avalanche Fuji configuration
@@ -26,37 +25,33 @@ async function main() {
 	const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 	// Load the ABI of the MessageSender contract
-	const messageSenderJson = JSON.parse(
-		fs.readFileSync(path.resolve(__dirname, '../out/MessageSender.sol/MessageSender.json'), 'utf8')
+	const keyStoreJson = JSON.parse(
+		fs.readFileSync(path.resolve(__dirname, '../out/KeyStore.sol/KeyStore.json'), 'utf8')
 	);
 
 	// Create a contract instance for MessageSender
-	const MessageSender = new ethers.Contract(
-		deployedContracts.ethereum.MessageSender, // Automatically use the deployed address
-		messageSenderJson.abi,
+	const KeyStore = new ethers.Contract(
+		deployedContracts.ethereum.KeyStore, // Automatically use the deployed address
+		keyStoreJson.abi,
 		wallet
 	);
 
-	// Define the target chain and target address (the Celo receiver contract)
-	const targetChain = 14; // Wormhole chain ID for Celo Alfajores
-	const targetAddress = deployedContracts.celo.MessageReceiver; // Automatically use the deployed address
-
-	// Dynamically quote the cross-chain cost
-	const txCost = await MessageSender.quoteCrossChainCost(targetChain);
+	const currentStateRoot = await KeyStore.getLatestStateRoot();
+	console.log('current state root: ', currentStateRoot);
 
 	// Send the message (make sure to send enough gas in the transaction)
-	const tx = await MessageSender.sendMessage(targetChain, targetAddress, {
-		value: txCost,
-	});
+	const message = 1;
+	const tx = await KeyStore.setLatestStateRoot(message);
 
 	console.log('Transaction sent, waiting for confirmation...');
 	await tx.wait();
 	console.log('...');
 
 	console.log('Message sent! Transaction hash:', tx.hash);
-	console.log(
-		`You may see the transaction status on the Wormhole Explorer: https://wormholescan.io/#/tx/${tx.hash}?network=TESTNET`
-	);
+
+
+	const newStateRoot = await KeyStore.getLatestStateRoot();
+	console.log('new state root: ', newStateRoot);
 }
 
 main().catch((error) => {
